@@ -10,7 +10,7 @@
   ],
   "author": "Carlos Rocha",
   "license": "MIT",
-  "main": "./lib/index",
+  "main": "./src/index",
   "files": [
     "css",
     "lib",
