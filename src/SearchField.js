@@ -9,11 +9,10 @@ var SearchField = React.createClass({
   render() {
     return (
       <div>
-        <label htmlFor={this.props.id}>{this.props.label}</label>
         <input
-          id={this.props.id}
           type="search"
           value={this.props.value}
+          placeholder={this.props.label}
           onChange={this.onChange}
         />
       </div>

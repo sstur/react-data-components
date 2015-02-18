@@ -10,8 +10,8 @@ module.exports = {
 
   getInitialState() {
     return {
-      // Clone the initialData.
-      data: this.props.initialData.slice(0),
+      // Clone the data.
+      data: this.props.data.slice(0),
       sortBy: this.props.initialSortBy,
       filterValues: {},
       currentPage: 0,
@@ -31,6 +31,17 @@ module.exports = {
     };
   },
 
+  componentWillReceiveProps:function(newProps) {
+    if (newProps.data && newProps.data !== this.props.data) {
+      this.setState({
+        data: newProps.data.slice(),
+        sortBy: this.props.initialSortBy,
+        filterValues: {},
+        currentPage: 0
+      });
+    }
+  },
+
   componentWillMount() {
     // Do the initial sorting if specified.
     var {sortBy, data} = this.state;
@@ -48,10 +59,10 @@ module.exports = {
 
   onFilter(filterName, filterValue) {
     var {filterValues, sortBy} = this.state;
-    var {initialData, filters} = this.props;
+    var {data, filters} = this.props;
 
     filterValues[filterName] = filterValue;
-    var newData = filter(filters, filterValues, initialData);
+    var newData = filter(filters, filterValues, data);
     newData = sort(sortBy, newData);
 
     this.setState({

@@ -120,16 +120,20 @@ var Table = React.createClass({
     });
 
     var getKeys = Array.isArray(keys) ? keyGetter(keys) : simpleGet(keys);
-    var rows = this.props.dataArray.map(
-      row =>
-        <tr key={getKeys(row)} {...buildRowOpts(row)}>
+    var rows = this.props.dataArray.map((row) => {
+      var key = getKeys(row);
+      var opts = buildRowOpts(row);
+      return (
+        <tr key={key} onClick={this._onRowClick.bind(null, key)} {...opts}>
           {columns.map(
             (col, i) =>
               <td key={i} className={getCellClass(col, row)}>
                 {getCellValue(col, row)}
               </td>
           )}
-        </tr>);
+        </tr>
+      );
+    });
 
     return (
       <table className={this.props.className}>
@@ -144,6 +148,12 @@ var Table = React.createClass({
         </tbody>
       </table>
     );
+  },
+
+  _onRowClick: function(key, e) {
+    if (this.props.onRowClick) {
+      this.props.onRowClick(key, e);
+    }
   }
 
 });
