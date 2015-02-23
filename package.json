@@ -22,7 +22,7 @@
     "url": "https://github.com/carlosrocha/react-data-components"
   },
   "peerDependencies": {
-    "react": "^0.12.2"
+    "react": ">=0.12"
   },
   "devDependencies": {
     "css-loader": "^0.7.1",
@@ -42,7 +42,7 @@
     "file-loader": "^0.7.2"
   },
   "scripts": {
-    "prepublish": "./node_modules/react-tools/bin/jsx --harmony --no-cache-dir src lib",
+    "_prepublish": "./node_modules/react-tools/bin/jsx --harmony --no-cache-dir src lib",
     "start": "cd example && webpack-dev-server --progress --colors --hot --inline",
     "test": "jest"
   },
