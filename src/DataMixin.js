@@ -31,30 +31,33 @@ module.exports = {
     };
   },
 
+  componentWillMount() {
+    this._sortData();
+  },
+
   componentWillReceiveProps:function(newProps) {
-    if (newProps.data && newProps.data !== this.props.data) {
+    if (newProps.data !== this.props.data) {
       this.setState({
         data: newProps.data.slice(),
-        sortBy: this.props.initialSortBy,
         filterValues: {},
         currentPage: 0
-      });
+      }, this._sortData);
     }
   },
 
-  componentWillMount() {
-    // Do the initial sorting if specified.
-    var {sortBy, data} = this.state;
-    if (sortBy) {
-      this.setState({ data: sort(sortBy, data) });
+  _sortData() {
+    if (this.state.sortBy) {
+      var newData = sort(this.state.sortBy, this.state.data);
+      this.setState({
+        data: newData
+      });
     }
   },
 
   onSort(sortBy) {
     this.setState({
-      sortBy: sortBy,
-      data: sort(sortBy, this.state.data)
-    });
+      sortBy: sortBy
+    }, this._sortData);
   },
 
   onFilter(filterName, filterValue) {
