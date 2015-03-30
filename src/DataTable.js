@@ -13,29 +13,6 @@ var DataTable = React.createClass({
   render() {
     var page = this.buildPage();
 
-    if (this.props.showPageLengthSelector !== false) {
-      var pageLengthSelector = (
-        <SelectField
-          id="page-menu"
-          label="Page size:"
-          value={this.state.pageLength}
-          options={this.props.pageLengthOptions}
-          onChange={this.onPageLengthChange}
-        />
-      );
-    }
-
-    if (this.props.showSearch !== false) {
-      var searchField = (
-        <SearchField
-          id="search-field"
-          label="Search"
-          value={this.state.filterValues['globalSearch']}
-          onChange={this.onFilter.bind(this, 'globalSearch')}
-        />
-      );
-    }
-
     if (this.state.data.length > this.state.pageLength) {
       var pageControls = (
         <div className="page-controls">
@@ -53,9 +30,10 @@ var DataTable = React.createClass({
       <div className={this.props.className}>
         <div className="controls">
           <div className="filter-controls">
-            {pageLengthSelector}
-            {searchField}
+            {this._renderPageLengthSelector()}
+            {this._renderSearchVield()}
           </div>
+          {this.props.children}
           {pageControls}
         </div>
         <Table
@@ -68,6 +46,31 @@ var DataTable = React.createClass({
           onSort={this.onSort}
         />
       </div>
+    );
+  },
+
+  _renderPageLengthSelector() {
+    if (this.props.showPageLengthSelector === false) return;
+    return (
+      <SelectField
+        id="page-menu"
+        label="Page size:"
+        value={this.state.pageLength}
+        options={this.props.pageLengthOptions}
+        onChange={this.onPageLengthChange}
+      />
+    );
+  },
+
+  _renderSearchVield() {
+    if (this.props.showSearch === false) return;
+    return (
+      <SearchField
+        id="search-field"
+        label="Search"
+        value={this.state.filterValues['globalSearch']}
+        onChange={this.onFilter.bind(this, 'globalSearch')}
+      />
     );
   }
 });
