@@ -21,7 +21,14 @@ function some(pred, obj) {
  * @return {function(object, object)} Compare function.
  */
 var sortByFunc = (prop) => {
-  (a, b) => a[prop] < b[prop] ? -1 : a[prop] > b[prop] ? 1 : 0;
+  return (a, b) => {
+    a = a[prop];
+    b = b[prop];
+    if (typeof a === 'string') {
+      return a.localeCompare(b);
+    }
+    return a < b ? -1 : (a > b ? 1 : 0);
+  };
 }
 
 /**
