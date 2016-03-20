@@ -1,4 +1,5 @@
-var React = require('react/addons');
+var React = require('react');
+var PureRenderMixin = require('react-addons-pure-render-mixin');
 
 // Used to cancel events.
 var preventDefault = e => e.preventDefault();
@@ -14,7 +15,7 @@ var ListButton = React.createClass({
 
 var Pagination = React.createClass({
 
-  mixins: [ React.addons.PureRenderMixin ],
+  mixins: [ PureRenderMixin ],
 
   propTypes: {
     onChangePage: React.PropTypes.func.isRequired,
