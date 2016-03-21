@@ -21,13 +21,11 @@ var getNextOrder =
     sortBy.prop === prop && sortBy.order === 'asc' ? 'desc' : 'asc';
 
 var getCellValue =
-  ({ prop, defaultContent, render }, row) =>
+  ({ prop, defaultContent, render }, row) => {
     // Return `defaultContent` if the value is empty.
-    !isEmpty(prop) && isEmpty(row[prop]) ? defaultContent :
-      // Use the render function for the value.
-      render ? render(row[prop], row) :
-      // Otherwise just return the value.
-      row[prop];
+    var content = !isEmpty(prop) && isEmpty(row[prop]) ? defaultContent : row[prop];
+    return render ? render(content, row) : content;
+  }
 
 var getCellClass =
   ({ prop, className }, row) =>
@@ -50,7 +48,7 @@ var Table = React.createClass({
       ]),
       render: React.PropTypes.func,
       sortable: React.PropTypes.bool,
-      defaultContent: React.PropTypes.string,
+      defaultContent: React.PropTypes.node,
       width: React.PropTypes.oneOfType([
         React.PropTypes.string,
         React.PropTypes.number
