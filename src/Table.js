@@ -70,6 +70,8 @@ var Table = React.createClass({
       ]),
       order: React.PropTypes.oneOf([ 'asc', 'desc' ])
     }),
+    onDisplayChange: React.PropTypes.func,
+    onRowClick: React.PropTypes.func,
     onSort: React.PropTypes.func
   },
 
@@ -88,6 +90,13 @@ var Table = React.createClass({
       if (!thDom.style.width) {
         thDom.style.width = `${thDom.offsetWidth}px`;
       }
+    }
+  },
+
+  componentWillReceiveProps(newProps) {
+    let oldProps = this.props;
+    if (oldProps.dataArray !== newProps.dataArray) {
+      newProps.onDisplayChange(oldProps.dataArray, newProps.dataArray);
     }
   },
 

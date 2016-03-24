@@ -78,16 +78,31 @@ module.exports = {
   // Pagination
   buildPage() {
     var {data, currentPage, pageLength} = this.state;
+    if (
+      this._cachedState &&
+      this._cachedState.data === data &&
+      this._cachedState.currentPage === currentPage &&
+      this._cachedState.pageLength === pageLength
+    ) {
+      return this._cachedPage;
+    }
+
     var start = pageLength * currentPage;
 
-    return {
+    let page = {
       data: data.slice(start, start + pageLength),
       currentPage: currentPage,
       totalPages: Math.ceil(data.length / pageLength)
     };
+    this._cachedPage = page;
+    this._cachedState = {data, currentPage, pageLength};
+    return page;
   },
 
   onChangePage(pageNumber) {
+    if (this.props.onPageChange) {
+      this.props.onPageChange(this.state.currentPage, pageNumber);
+    }
     this.setState({ currentPage: pageNumber });
   },
 
