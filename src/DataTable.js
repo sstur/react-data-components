@@ -6,39 +6,43 @@ var SearchField = require('./SearchField');
 
 var DataMixin = require('./DataMixin');
 
+var {PropTypes} = React;
+
 var DataTable = React.createClass({
 
   mixins: [ DataMixin ],
 
+  childContextTypes: {
+    currentPage: PropTypes.number,
+    dataLength: PropTypes.number,
+    globalSearchValue: PropTypes.string,
+    onChangePage: PropTypes.func,
+    onGlobalSearchChange: PropTypes.func,
+    onPageLengthChange: PropTypes.func,
+    pageLength: PropTypes.number,
+  },
+
+  getChildContext() {
+    let {state} = this.state;
+    return {
+      currentPage: state.currentPage,
+      dataLength: state.data.length,
+      globalSearchValue: state.filterValues.globalSearch,
+      onChangePage: this.onChangePage,
+      onGlobalSearchChange: this.onFilter.bind(this, 'globalSearch'),
+      onPageLengthChange: this.onPageLengthChange,
+      pageLength: state.pageLength,
+    };
+  },
+
   render() {
-    var page = this.buildPage();
-
-    if (this.state.data.length > this.state.pageLength) {
-      var pageControls = (
-        <div className="page-controls">
-          <Pagination
-            className="pagination pull-right"
-            currentPage={page.currentPage}
-            totalPages={page.totalPages}
-            onChangePage={this.onChangePage}
-          />
-        </div>
-      );
-    }
-
+    var {data} = this.buildPage();
     return (
       <div className={this.props.className}>
-        <div className="controls">
-          <div className="filter-controls">
-            {this._renderPageLengthSelector()}
-            {this._renderSearchVield()}
-          </div>
-          {this.props.children}
-          {pageControls}
-        </div>
+        {this.props.children}
         <Table
           className="table table-bordered"
-          dataArray={page.data}
+          dataArray={data}
           columns={this.props.columns}
           onDisplayChange={this.props.onDisplayChange}
           onRowClick={this.props.onRowClick}
@@ -50,30 +54,90 @@ var DataTable = React.createClass({
     );
   },
 
-  _renderPageLengthSelector() {
-    if (this.props.showPageLengthSelector === false) return;
-    return (
-      <SelectField
-        id="page-menu"
-        label="Page size:"
-        value={this.state.pageLength}
-        options={this.props.pageLengthOptions}
-        onChange={this.onPageLengthChange}
-      />
-    );
+  // _render() {
+  //   return (
+  //     <div className="controls">
+  //       <div className="filter-controls">
+  //         <PageLengthSelector />
+  //         <SearchFilter />
+  //       </div>
+  //       <PageSelector />
+  //     </div>
+  //   );
+  // },
+
+});
+
+var SearchFilter = React.createClass({
+  contextTypes: {
+    globalSearchValue: PropTypes.string,
+    onGlobalSearchChange: PropTypes.func,
   },
 
-  _renderSearchVield() {
-    if (this.props.showSearch === false) return;
+  render() {
+    let {context} = this;
     return (
       <SearchField
         id="search-field"
         label="Search"
-        value={this.state.filterValues['globalSearch']}
-        onChange={this.onFilter.bind(this, 'globalSearch')}
+        value={context.globalSearchValue}
+        onChange={context.onGlobalSearchChange}
       />
     );
   }
 });
 
+var PageLengthSelector = React.createClass({
+  propTypes: {
+    options: PropTypes.object,
+  },
+
+  contextTypes: {
+    pageLength: PropTypes.number,
+    onPageLengthChange: PropTypes.func,
+  },
+
+  render() {
+    let {context, props} = this;
+    return (
+      <SelectField
+        id="page-menu"
+        label="Page size:"
+        value={context.pageLength}
+        options={props.options}
+        onChange={context.onPageLengthChange}
+      />
+    );
+  }
+});
+
+var PageSelector = React.createClass({
+  contextTypes: {
+    currentPage: PropTypes.number,
+    dataLength: PropTypes.number,
+    onChangePage: PropTypes.func,
+    pageLength: PropTypes.number,
+  },
+
+  render() {
+    let {dataLength, pageLength, currentPage, onPageChange} = this.context;
+    if (dataLength > pageLength) {
+      let totalPages = Math.ceil(dataLength / pageLength);
+      return (
+        <div className="page-controls">
+          <Pagination
+            className="pagination pull-right"
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onChangePage={onChangePage}
+          />
+        </div>
+      );
+    }
+  }
+});
+
 module.exports = DataTable;
+module.exports.SearchFilter = SearchFilter;
+module.exports.PageLengthSelector = PageLengthSelector;
+module.exports.PageSelector = PageSelector;
