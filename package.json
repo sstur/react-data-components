@@ -45,7 +45,8 @@
   "scripts": {
     "build": "jsx --harmony --no-cache-dir src lib",
     "start": "cd example && webpack-dev-server --progress --colors --hot --inline",
-    "test": "jest"
+    "test": "jest",
+    "prepublish": "npm run build"
   },
   "jest": {
     "rootDir": "src",
